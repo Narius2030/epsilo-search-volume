@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: dim_daily_search_volume 
+    columns:
+      - name: daily_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_hourly_search_volume 
+    columns:
+      - name: hourly_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
