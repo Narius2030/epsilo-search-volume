@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  airflow:
+    container_name: streamify-airflow
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/opt/airflow
+      - ../profiles.yml:/home/airflow/.dbt/profiles.yml
+    ports:
+      - "8081:8080"
+    command: airflow standalone
+    networks:
+      - data_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    volumes:
+      - ./mysql_h:/var/lib/mysql
+      - ./dataset:/tmp/dataset
+    ports:
+      - "3307:3306"
+    env_file: 
+      - ./.env
+    networks:
+      - data_network
+
+networks:
+  data_network:
+    driver: bridge
+    name: data_network

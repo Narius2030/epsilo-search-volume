@@ -1,0 +1,10 @@
+tqdm
+pydantic==2.7.3
+pydantic-settings==2.7.1
+python-dotenv
+trino
+mysql
+requests
+# dbt-core
+# dbt-mysql
+# dbt-trino
