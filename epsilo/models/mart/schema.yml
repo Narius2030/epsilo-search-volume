@@ -16,3 +16,11 @@ models:
         tests:
           - unique
           - not_null
+  
+  - name: dim_subscriptions
+    columns:
+      - name: subscription_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null

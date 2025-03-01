@@ -33,7 +33,7 @@ sources:
             tests:
               - dbt_expectations.expect_column_values_to_not_be_null
               - dbt_expectations.expect_column_values_to_be_of_type:
-                  column_type: timestamp
+                  column_type: datetime
             
           - name: search_volume
             tests:
