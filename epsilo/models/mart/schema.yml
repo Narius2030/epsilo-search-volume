@@ -24,3 +24,43 @@ models:
         tests:
           - unique
           - not_null
+  
+  - name: fact_hourly_volume
+    columns:
+      - name: datetime_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
+
+      - name: hourly_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_daily_volume
+    columns:
+      - name: datetime_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
+
+      - name: daily_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_key
+        description: "The surrogate key for this dimension"
+        tests:
+          - unique
+          - not_null

@@ -32,7 +32,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   epsilo:
+    # Config indicated by + and applies to all files under models/example/
     staging:
-      +materialized: incremental
+      +materialized: table
     mart:
       +materialized: incremental

@@ -2,8 +2,6 @@
     unique_key="id"
 ) }}
 
-USE epsilo;
-
 WITH non_overlap AS (
     SELECT 
         s1.user_id,
@@ -14,7 +12,7 @@ WITH non_overlap AS (
         (CASE
 			WHEN s1.start_time<=s2.start_time AND s1.end_time>=s2.end_time
 			THEN s1.subscription_id ELSE s2.subscription_id
-		END AS subscription_id)
+		END) AS subscription_id
     FROM {{ source("epsilo", "subscriptions") }} s1
     JOIN {{ source("epsilo", "subscriptions") }} s2 
         ON s2.user_id=s1.user_id
@@ -33,4 +31,4 @@ SELECT
     MIN(start_time) AS start_time,
     MAX(end_time) AS end_time
 FROM non_overlap
-GROUP BY user_id, keyword_id, subscription_id, timing,
+GROUP BY user_id, keyword_id, subscription_id, timing

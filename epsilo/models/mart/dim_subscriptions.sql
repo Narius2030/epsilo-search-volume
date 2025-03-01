@@ -1,5 +1,5 @@
 {{ config(
-    unique_key=["subscription_id],
+    unique_key='subscription_id',
     depends_on=['stg_overlap_subscriptions']
 ) }}
 

@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_overlap_subscription
+  - name: stg_overlap_subscriptions
     description: "A starter dbt model"
     columns:
       - name: subscription_id
