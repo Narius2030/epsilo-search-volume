@@ -31,7 +31,7 @@ CREATE TABLE subscriptions (
     FOREIGN KEY (keyword_id) REFERENCES keyword(keyword_id)
 );
 INSERT INTO subscriptions(subscription_id, user_id, keyword_id, start_time, end_time, timing) value
-(3, 123, 1, '2025-03-01 00:00:00', '2025-03-15 00:00:00', 'hourly');
+(4, 123, 8, '2025-03-10 00:00:00', '2025-03-25 00:00:00', 'hourly');
 
 
 --
@@ -47,15 +47,34 @@ INSERT INTO subscriptions(subscription_id, user_id, keyword_id, start_time, end_
 --     end_time<='2025-03-5 06:00:00' OR start_time>='2025-03-01 23:59:59'
 -- );
 
-CREATE OR REPLACE VIEW vw_keyword_subscribes
+CREATE OR REPLACE VIEW fact_hourly_volume
 AS
 SELECT
+	CAST(UNIX_TIMESTAMP(h.created_datetime) AS CHAR(255)) AS datetime_key,
+	s.subscription_key, h.hourly_key,
 	s.subscription_id, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_datetime, s.start_time, s.end_time
-FROM subscriptions s
-JOIN hourly_search_volume h
+FROM dim_subscriptions s
+JOIN dim_hourly_search_volume h
 	ON h.keyword_id=s.keyword_id AND (h.created_datetime BETWEEN s.start_time AND s.end_time)
 JOIN keyword k
 	ON k.keyword_id=s.keyword_id
 ;
 
+
+CREATE OR REPLACE VIEW fact_daily_volume
+AS
+SELECT
+	CAST(UNIX_TIMESTAMP(h.created_date) AS CHAR(255)) AS datetime_key,
+	s.subscription_key, h.daily_key,
+	s.subscription_id, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+    s.timing, h.created_date, s.start_time, s.end_time
+FROM dim_subscriptions s
+JOIN dim_daily_search_volume h
+	ON h.keyword_id=s.keyword_id AND (h.created_date BETWEEN s.start_time AND s.end_time)
+JOIN keyword k
+	ON k.keyword_id=s.keyword_id
+;
+
+
+SELECT COUNT(*) FROM dim_hourly_search_volume;
