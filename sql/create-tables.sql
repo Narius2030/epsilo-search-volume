@@ -35,24 +35,47 @@ INSERT INTO subscriptions(subscription_id, user_id, keyword_id, start_time, end_
 
 
 --
+-- Check valid subscription
+--
+
+SELECT *
+FROM dim_subscriptions
+WHERE user_id=123
+AND keyword_id IN (SELECT keyword_id FROM keyword WHERE keyword_name IN ('blockchain'))
+AND NOT (
+    (end_time<'2025-01-01 23:59:59') OR (start_time>'2025-03-10 00:00:00')
+);
+
+
+SELECT 
+	keyword_name, search_volume, created_datetime
+FROM vw_fact_hourly_volume
+WHERE user_id=123 
+AND keyword_id IN (SELECT keyword_id FROM keyword WHERE keyword_name IN ('blockchain', 'machine learning'))
+AND (created_datetime BETWEEN '2025-02-01 23:59:59' AND '2025-03-10 00:00:00')
+;
+
+SELECT 
+    keyword_name, search_volume, created_date
+FROM vw_fact_daily_volume
+WHERE user_id=123 
+AND keyword_id IN (SELECT keyword_id FROM keyword WHERE keyword_name IN ('blockchain', 'machine learning'))
+AND (created_date BETWEEN '2025-02-01 23:59:59' AND '2025-03-10 00:00:00')
+;
+
+SELECT * FROM vw_fact_daily_volume;
+
+--
 -- View for search_volume in time range of keywords
 --
 
--- Check valid subscription
--- SELECT *
--- FROM subscriptions
--- WHERE user_id=123
--- AND keyword_id=(SELECT keyword_id FROM keyword WHERE keyword_name='machine learning')
--- AND NOT (
---     end_time<='2025-03-5 06:00:00' OR start_time>='2025-03-01 23:59:59'
--- );
 
-CREATE OR REPLACE VIEW fact_hourly_volume
+CREATE OR REPLACE VIEW vw_fact_hourly_volume
 AS
 SELECT
 	CAST(UNIX_TIMESTAMP(h.created_datetime) AS CHAR(255)) AS datetime_key,
 	s.subscription_key, h.hourly_key,
-	s.subscription_id, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+	s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_datetime, s.start_time, s.end_time
 FROM dim_subscriptions s
 JOIN dim_hourly_search_volume h
@@ -62,12 +85,12 @@ JOIN keyword k
 ;
 
 
-CREATE OR REPLACE VIEW fact_daily_volume
+CREATE OR REPLACE VIEW vw_fact_daily_volume
 AS
 SELECT
 	CAST(UNIX_TIMESTAMP(h.created_date) AS CHAR(255)) AS datetime_key,
 	s.subscription_key, h.daily_key,
-	s.subscription_id, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+	s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_date, s.start_time, s.end_time
 FROM dim_subscriptions s
 JOIN dim_daily_search_volume h
@@ -75,6 +98,3 @@ JOIN dim_daily_search_volume h
 JOIN keyword k
 	ON k.keyword_id=s.keyword_id
 ;
-
-
-SELECT COUNT(*) FROM dim_hourly_search_volume;
