@@ -12,14 +12,8 @@ CREATE TABLE hourly_search_volume (
     PRIMARY KEY (keyword_id, created_datetime),
     FOREIGN KEY (keyword_id) REFERENCES keyword(keyword_id)
 );
-
-CREATE TABLE daily_search_volume (
-    keyword_id BIGINT,
-    created_date DATE,  -- yyyy-MM-dd
-    search_volume BIGINT,
-    PRIMARY KEY (keyword_id, created_date),
-    FOREIGN KEY (keyword_id) REFERENCES keyword(keyword_id)
-);
+CREATE INDEX idx_hourly_search_volume 
+ON hourly_search_volume(keyword_id, created_datetime);
 
 CREATE TABLE subscriptions (
     subscription_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -30,8 +24,39 @@ CREATE TABLE subscriptions (
     timing ENUM('hourly', 'daily') NOT NULL,
     FOREIGN KEY (keyword_id) REFERENCES keyword(keyword_id)
 );
+CREATE INDEX idx_user_subscriptions 
+ON subscriptions(user_id, keyword_id, start_time, end_time);
 INSERT INTO subscriptions(subscription_id, user_id, keyword_id, start_time, end_time, timing) value
 (4, 123, 8, '2025-03-10 00:00:00', '2025-03-25 00:00:00', 'hourly');
+
+
+CREATE TABLE dim_daily_search_volume (
+  daily_key varchar(32) DEFAULT NULL PRIMARY KEY,
+  keyword_id bigint NOT NULL,
+  created_date date DEFAULT NULL,
+  search_volume bigint DEFAULT NULL,
+  KEY idx_daily_search_volume (daily_key, keyword_id, created_date)
+);
+
+CREATE TABLE dim_hourly_search_volume (
+	hourly_key varchar(32) DEFAULT NULL PRIMARY KEY,
+	keyword_id bigint NOT NULL,
+	created_datetime datetime NOT NULL,
+	search_volume bigint DEFAULT NULL,
+	KEY idx_hourly_search_volume (hourly_key, keyword_id, created_datetime)
+);
+
+CREATE TABLE dim_subscriptions (
+  subscription_key varchar(32) DEFAULT NULL PRIMARY KEY,
+  user_id bigint NOT NULL,
+  keyword_id bigint NOT NULL,
+  timing enum('hourly','daily') NOT NULL,
+  start_time datetime,
+  end_time datetime,
+  KEY idx_user_subscriptions (user_id, keyword_id, start_time, end_time)
+);
+
+
 
 
 --
@@ -70,12 +95,11 @@ SELECT * FROM vw_fact_daily_volume;
 --
 
 
-CREATE OR REPLACE VIEW vw_fact_hourly_volume
+CREATE OR REPLACE VIEW fact_hourly_volume
 AS
 SELECT
 	CAST(UNIX_TIMESTAMP(h.created_datetime) AS CHAR(255)) AS datetime_key,
-	s.subscription_key, h.hourly_key,
-	s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+	s.subscription_key, h.hourly_key, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_datetime, s.start_time, s.end_time
 FROM dim_subscriptions s
 JOIN dim_hourly_search_volume h
@@ -85,12 +109,11 @@ JOIN keyword k
 ;
 
 
-CREATE OR REPLACE VIEW vw_fact_daily_volume
+CREATE OR REPLACE VIEW fact_daily_volume
 AS
 SELECT
 	CAST(UNIX_TIMESTAMP(h.created_date) AS CHAR(255)) AS datetime_key,
-	s.subscription_key, h.daily_key,
-	s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+	s.subscription_key, h.daily_key, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_date, s.start_time, s.end_time
 FROM dim_subscriptions s
 JOIN dim_daily_search_volume h
