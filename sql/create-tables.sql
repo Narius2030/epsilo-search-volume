@@ -27,7 +27,8 @@ CREATE TABLE subscriptions (
 CREATE INDEX idx_user_subscriptions 
 ON subscriptions(user_id, keyword_id, start_time, end_time);
 INSERT INTO subscriptions(subscription_id, user_id, keyword_id, start_time, end_time, timing) value
-(4, 123, 8, '2025-03-10 00:00:00', '2025-03-25 00:00:00', 'hourly');
+-- (4, 123, 8, '2025-03-10 00:00:00', '2025-03-25 00:00:00', 'hourly'),
+(5, 122, 5, '2025-03-01 00:00:00', '2025-03-15 00:00:00', 'daily');
 
 
 CREATE TABLE dim_daily_search_volume (

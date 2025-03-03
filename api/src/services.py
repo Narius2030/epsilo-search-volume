@@ -66,7 +66,7 @@ async def getDailySearchVolume(keyword:KeyWord):
         AND timing='{keyword.timing}'
         AND keyword_id IN (SELECT keyword_id FROM keyword WHERE keyword_name IN {tuple(keyword.keywords) if len(keyword.keywords) > 1 else f"('{keyword.keywords[0]}')"})
         AND NOT (
-            end_time>'{keyword.end_time}' OR start_time<'{keyword.start_time}'
+            (end_time<'{keyword.start_time}') OR (start_time>'{keyword.end_time}')
         );
     """
     subs = sql_opt.execute_query(sql_string)
