@@ -7,8 +7,7 @@
 
 SELECT
     CAST(UNIX_TIMESTAMP(h.created_datetime) AS CHAR(255)) AS datetime_key,
-    s.subscription_key, h.hourly_key,
-	s.subscription_id, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+    s.subscription_key, h.hourly_key, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_datetime, s.start_time, s.end_time
 FROM {{ ref("dim_subscriptions") }} s
 JOIN {{ ref("dim_hourly_search_volume") }} h

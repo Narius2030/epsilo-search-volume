@@ -98,3 +98,5 @@ JOIN dim_daily_search_volume h
 JOIN keyword k
 	ON k.keyword_id=s.keyword_id
 ;
+
+

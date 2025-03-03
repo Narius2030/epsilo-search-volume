@@ -1,5 +1,5 @@
 {{ config(
-    unique_key="id"
+    materialized='view'
 ) }}
 
 WITH non_overlap AS (

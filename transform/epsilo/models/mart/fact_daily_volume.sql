@@ -1,14 +1,13 @@
 {{ config(
+	materialized='view',
     unique_key=['subscription_key', 'daily_key', 'datetime_key'],
-    materialized='view',
     depends_on=['dim_subscriptions', 'dim_daily_search_volume']
 ) }}
 
 
 SELECT
 	CAST(UNIX_TIMESTAMP(h.created_date) AS CHAR(255)) AS datetime_key,
-	s.subscription_key, h.daily_key,
-	s.subscription_id, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
+	s.subscription_key, h.daily_key, s.user_id, h.keyword_id, k.keyword_name, h.search_volume, 
     s.timing, h.created_date, s.start_time, s.end_time
 FROM {{ ref("dim_subscriptions") }} s
 JOIN {{ ref("dim_daily_search_volume") }} h

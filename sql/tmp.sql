@@ -25,7 +25,7 @@ WITH non_overlap AS (
 )
 
 SELECT 
-    user_id, keyword_id, subscription_id, timing,
+    subscription_id, user_id, keyword_id, timing,
     MIN(start_time) AS start_time,
     MAX(end_time) AS end_time
 FROM non_overlap
@@ -34,5 +34,19 @@ GROUP BY user_id, keyword_id, subscription_id, timing
 
 
 
-SELECT COUNT(*) FROM dim_hourly_search_volume;
+
+SELECT 
+    MD5(CONCAT(
+	    COALESCE(CAST(s.user_id AS CHAR), ''),
+	    '-',
+	    COALESCE(CAST(s.keyword_id AS CHAR), ''),
+	    '-',
+	    COALESCE(CAST(s.start_time AS CHAR), ''),
+	    '-',
+	    COALESCE(CAST(s.end_time AS CHAR), '')
+    )) AS subscription_key,
+    s.user_id, s.keyword_id, s.timing,
+    s.start_time, s.end_time
+FROM stg_overlap_subscriptions s
+GROUP BY user_id, keyword_id, timing, start_time, end_time
 

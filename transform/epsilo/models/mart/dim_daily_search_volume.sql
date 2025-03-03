@@ -12,3 +12,4 @@ SELECT DISTINCT
     DATE(created_datetime) AS created_date,
 	SUM(search_volume) OVER (PARTITION BY keyword_id, DATE(created_datetime)) AS search_volume
 FROM {{ source("epsilo", "hourly_search_volume") }}
+WHERE HOUR(created_datetime) <= 9
