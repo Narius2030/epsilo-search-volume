@@ -9,9 +9,14 @@ Technology:
 - **Transfromation tool:** DBT, SQL
 - **HTTP Request:** FastAPI
 
+![image](https://github.com/user-attachments/assets/7b3a3bd5-0b21-47a3-bc37-71a45e266ae3)
+
 
 # Data Warehouse Design
 **Source Database** bao gồm 3 bảng gốc là `keyword, hourly_search_volume (keyword_search_volume), subscriptions`
+
+![image](https://github.com/user-attachments/assets/46b5012c-3ab7-4d2a-a77c-7857b9ade835)
+
 
 **Data Warehouse** tạo các bảng dimension và fact theo mô hình `Star schema (Kimball)`:
 - **Table dim_hourly_search_volume**: dùng cho keyword search volume đã được ghi lại `hàng giờ`
@@ -21,6 +26,9 @@ Technology:
 - **View fact_daily_volume:** rtrích xuất `theo ngày` search volume trong `khoảng thời gian` của mỗi user subscription
 
 Đánh Indexing trên các bảng _hourly_search_volume, dim_daily_search_volume, dim_hourly_search_volume và dim_subscriptions_ để tăng `hiệu suất truy vấn`
+
+![image](https://github.com/user-attachments/assets/ebe98db3-0ce2-4160-bff7-0a146e60b419)
+
 
 # HTTP Request
 **Gửi Request:** sẽ được xác thực thông tin người dùng và khoảng thời gian học yêu cầu trích xuất, nếu thời gian hợp lệ với dữ liệu subscription sẽ tiến hành lấy data
@@ -37,6 +45,9 @@ Technology:
 }
 ```
 
+![image](https://github.com/user-attachments/assets/f8e95fe7-7cbb-4283-80f4-1b964c1bd42c)
+
+
 **Nhận Request:** data được trả về có cấu trúc như sau
 ```json
 {
@@ -47,6 +58,9 @@ Technology:
     ]
 }
 ```
+
+![image](https://github.com/user-attachments/assets/f810e19e-7d13-46d9-b8a6-35988327746c)
+
 
 **Kiểm thử**
 
