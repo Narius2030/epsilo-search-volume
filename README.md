@@ -1,1 +1,101 @@
-![image](https://github.com/user-attachments/assets/0b0d2fb5-88aa-4488-8624-68a18ac54955)
+# Data Flow
+Dữ liệu khối lượng tìm kiếm được trích xuất từ ​​cơ sở dữ liệu nguồn (MySQL) và được biến đổi trong 2 bước: `staging` -> `mart`
+- **staging:** là nơi lưu trữ trung gian trong quá trình biến đổi
+- **mart:** chứa data có giá trị nghiệp vụ là các bảng `dimension và fact` trong `data warehouse`
+- **API Endpoint:** tạo API để trích xuất search volume trong `khoảng thời gian` của input keywords tương ứng vói mỗi `user subscription`
+
+Technology:
+- **Database:** MySQL (source, data warehouse)
+- **Transfromation tool:** DBT, SQL
+- **HTTP Request:** FastAPI
+
+
+# Data Warehouse Design
+**Source Database** bao gồm 3 bảng gốc là `keyword, hourly_search_volume (keyword_search_volume), subscriptions`
+
+**Data Warehouse** tạo các bảng dimension và fact theo mô hình `Star schema (Kimball)`:
+- **Table dim_hourly_search_volume**: dùng cho keyword search volume đã được ghi lại `hàng giờ`
+- **Table dim_daily_search_volume**: dùng cho `tổng search volume theo giờ` của mỗi keyword được ghi mỗi ngày vào lúc `9:00 AM`
+- **Table dim_subscriptions:** chứa user subscriptions đã được làm sạch từ staging view `stg_overlap_subscription`
+- **View fact_hourly_volume:** trích xuất `theo giờ` search volume trong `khoảng thời gian` của mỗi user subscription
+- **View fact_daily_volume:** rtrích xuất `theo ngày` search volume trong `khoảng thời gian` của mỗi user subscription
+
+Đánh Indexing trên các bảng _hourly_search_volume, dim_daily_search_volume, dim_hourly_search_volume và dim_subscriptions_ để tăng `hiệu suất truy vấn`
+
+# HTTP Request
+**Gửi Request:** sẽ được xác thực thông tin người dùng và khoảng thời gian học yêu cầu trích xuất, nếu thời gian hợp lệ với dữ liệu subscription sẽ tiến hành lấy data
+
+```json
+{
+  "user_id": 0,
+  "keywords": [
+    "string"
+  ],
+  "timing": "hourly",
+  "start_time": "2025-03-03T03:56:52",
+  "end_time": "2025-03-03T03:56:52"
+}
+```
+
+**Nhận Request:** data được trả về có cấu trúc như sau
+```json
+{
+    user_id: ...
+    timing: ...
+    data: [
+        ...keyword search volume...
+    ]
+}
+```
+
+**Kiểm thử**
+
+Input
+
+```json
+{
+  "user_id": 123,
+  "keywords": [
+    "blockchain"
+  ],
+  "timing": "hourly",
+  "start_time": "2025-02-01 23:59:59",
+  "end_time": "2025-03-10 00:00:00"
+}
+```
+
+Output
+
+```
+{
+    "user_id": 123,
+    "timing": "hourly",
+    "data": {
+    "hourly": [
+        {
+            "keyword_name": "blockchain",
+            "search_volume": 1845,
+            "created_datetime": "2025-03-01T00:00:00"
+        },
+        {
+            "keyword_name": "blockchain",
+            "search_volume": 457,
+            "created_datetime": "2025-03-01T01:00:00"
+        },
+        ...
+    ]
+    "daily": [
+        {
+            "keyword_name": "blockchain",
+            "search_volume": 24582,
+            "created_date": "2025-03-01"
+        },
+        {
+            "keyword_name": "blockchain",
+            "search_volume": 22185,
+            "created_date": "2025-03-02"
+        },
+        ...
+    ]
+}
+```
