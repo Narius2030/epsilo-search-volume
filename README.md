@@ -29,7 +29,8 @@ Technology:
 
 Đánh Indexing trên các bảng _dim_daily_search_volume, dim_hourly_search_volume và dim_subscriptions_ để tăng `hiệu suất truy vấn`
 
-![image](https://github.com/user-attachments/assets/ebe98db3-0ce2-4160-bff7-0a146e60b419)
+![image](https://github.com/user-attachments/assets/50397283-4318-4835-aff5-c79b21a323ff)
+
 
 
 # HTTP Request
