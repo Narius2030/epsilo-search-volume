@@ -9,11 +9,13 @@ Technology:
 - **Transfromation tool:** DBT, SQL
 - **HTTP Request:** FastAPI
 
-![image](https://github.com/user-attachments/assets/7b3a3bd5-0b21-47a3-bc37-71a45e266ae3)
+![image](https://github.com/user-attachments/assets/b52ce773-964f-4ce3-bb07-9c76e3cbf2e4)
 
 
 # Data Warehouse Design
 **Source Database** bao gồm 3 bảng gốc là `keyword, hourly_search_volume (keyword_search_volume), subscriptions`
+
+Đánh Indexing trên các bảng _hourly_search_volume_
 
 ![image](https://github.com/user-attachments/assets/46b5012c-3ab7-4d2a-a77c-7857b9ade835)
 
@@ -25,7 +27,7 @@ Technology:
 - **View fact_hourly_volume:** trích xuất `theo giờ` search volume trong `khoảng thời gian` của mỗi user subscription
 - **View fact_daily_volume:** rtrích xuất `theo ngày` search volume trong `khoảng thời gian` của mỗi user subscription
 
-Đánh Indexing trên các bảng _hourly_search_volume, dim_daily_search_volume, dim_hourly_search_volume và dim_subscriptions_ để tăng `hiệu suất truy vấn`
+Đánh Indexing trên các bảng _dim_daily_search_volume, dim_hourly_search_volume và dim_subscriptions_ để tăng `hiệu suất truy vấn`
 
 ![image](https://github.com/user-attachments/assets/ebe98db3-0ce2-4160-bff7-0a146e60b419)
 
@@ -48,7 +50,7 @@ Technology:
 ![image](https://github.com/user-attachments/assets/f8e95fe7-7cbb-4283-80f4-1b964c1bd42c)
 
 
-**Nhận Request:** data được trả về có cấu trúc như sau
+**Nhận Response:** data được trả về có cấu trúc như sau
 ```json
 {
     user_id: ...
