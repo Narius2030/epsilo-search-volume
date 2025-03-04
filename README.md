@@ -1,10 +1,10 @@
 # Requirements
 
-We build a service that collects hourly search volume of different keywords.
-Daily data will be the record of 9:00AM every day or nearest time of the day if 9:00AM data is not available.
+We build a service that collects `hourly` search volume of different keywords.
+Daily data will be the record of 9:00AM every day or `nearest time of the day if 9:00AM` data is not available.
 Users can subscribe and query the search volume hourly or daily in a range of time of any keyword.
-Users can subscribe to the overlap timeline of a keyword and will see the union range of them.
-Users who subscribe daily will not see data hourly but users who subscribe hourly will see the daily data.
+Users can subscribe to the `overlap timeline` of a keyword and will see the `union range` of them.
+Users who `subscribe daily` will `not see` data hourly but users who `subscribe hourly` will `see` the daily data.
 
 Original 2 tables for record metrics look like this:
 
