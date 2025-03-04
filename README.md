@@ -5,7 +5,6 @@ Daily data will be the record of 9:00AM every day or nearest time of the day if 
 Users can subscribe and query the search volume hourly or daily in a range of time of any keyword.
 Users can subscribe to the overlap timeline of a keyword and will see the union range of them.
 Users who subscribe daily will not see data hourly but users who subscribe hourly will see the daily data.
----------------------
 
 Original 2 tables for record metrics look like this:
 
@@ -21,14 +20,14 @@ search_volume - bigint
 primary key (keyword_id, created_datetime)
 
 Write HTTP service in Python or Java to support query data
-    - Input in JSON:
-        - user ID
-        - list keywords
-        - timing (hourly/daily)
-        - start time
-        - end time
-    - Return in JSON:
-        - the search volume in the time range of input keywords following user subscription
+- Input in JSON:
+    - user ID
+    - list keywords
+    - timing (hourly/daily)
+    - start time
+    - end time
+- Return in JSON:
+    - the search volume in the time range of input keywords following user subscription
 
 # Data Flow
 Dữ liệu khối lượng tìm kiếm được trích xuất từ ​​cơ sở dữ liệu nguồn (MySQL) và được biến đổi trong 2 bước: `staging` -> `mart`
