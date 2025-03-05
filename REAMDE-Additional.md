@@ -53,6 +53,6 @@ Thiết kế lại Data Warehouse như sau:
 
 # Những điểm chưa cover
 
-Các bảng dimension đang được load bằng kiểu `SCD Type 1`, tức là `upsert`, dẫn đến các dữ liệu trong quá khứ sẽ không được ghi lại. Ví dụ công ty thực hiện thay đổi cách đánh id, thì sẽ thay đổi keyword_id tại source, sau khi load mới sẽ cập nhật keyword_id trong dimension. Dẫn tới các bản ghi thuộc keyword_id cũ trong fact (hoặc các bảng có liên kết) không thể tham chiếu tới.
+Các bảng dimension đang được load bằng kiểu `SCD Type 1`, tức là thực hiện `upsert`, dẫn đến các dữ liệu trong quá khứ sẽ không được ghi lại. Ví dụ công ty thực hiện thay đổi cách đánh id, thì sẽ thay đổi keyword_id tại source, sau khi load mới sẽ cập nhật keyword_id trong dimension. Dẫn tới các bản ghi thuộc keyword_id cũ trong các bảng dimension `không thể` được tham chiếu tới từ fact .
 
-Nên dùng `SCD Type 2` kèm thêm cột `row_is_current`, để đánh trạng thái của keyword_id cũ là false (nghĩa là ko còn hoạt động). Từ đó, các cột tham chiếu từ fact có thể tiếp tục liên kết với keyword_id cũ, và lưu trữ lại `dữ liệu lịch sử`.
+Nên dùng `SCD Type 2` kèm thêm cột `row_is_current`, để keyword_id cũ vẫn được dữ liệu và cột đó bằng false (nghĩa là ko còn hoạt động). Từ đó, các cột tham chiếu từ fact có thể tiếp tục liên kết với keyword_id cũ, và lưu trữ lại `dữ liệu lịch sử`.
