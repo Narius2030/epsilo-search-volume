@@ -21,14 +21,14 @@ class KeyWord(BaseModel):
     def is_valid_start_time(cls, start_time: datetime):
         if start_time >= datetime(2025, 1, 1, 0, 0, 0):
             return start_time
-        raise ValueError(f'{start_time} has to be greater than or equal 2025-01-01 00:00:00')
+        raise ValueError(f'start_time has to be greater than or equal 2025-01-01 00:00:00')
     
     @field_validator("end_time", mode='after')
     @classmethod
     def is_valid_end_time(cls, end_time: datetime):
         if end_time <= datetime(2025, 3, 31, 23, 0, 0):
             return end_time
-        raise ValueError(f'{end_time} has to be less than or equal 2025-03-31 23:00:00')
+        raise ValueError(f'end_time has to be less than or equal 2025-03-31 23:00:00')
     
     
 class RespKeyWord(BaseModel):

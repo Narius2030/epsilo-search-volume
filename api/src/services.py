@@ -26,6 +26,8 @@ async def getHourlySearchVolume(keyword:KeyWord):
     if not subs:
         raise HTTPException(status_code=404, 
                             detail="user's subscription info is not found")
+        
+    ## TODO: retrieve appropriate data
     try:
         sql_string = f"""
             SELECT

@@ -30,7 +30,7 @@ async def search_volume(keyword:KeyWord=Body(...)):
         "timing": keyword.timing,
         "data": values
     }
-    logger.info(f'========== Fetched successfully: {len(response["data"]["hourly"])} ==========')
+    # logger.info(f'========== Fetched successfully: {len(response["data"]["hourly"])} ==========')
     return response
 
 

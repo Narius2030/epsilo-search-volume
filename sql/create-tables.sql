@@ -47,6 +47,13 @@ CREATE TABLE dim_hourly_search_volume (
 	KEY idx_hourly_search_volume (hourly_key, keyword_id, created_datetime)
 );
 
+CREATE TABLE dim_keywords (
+	keyword_key VARCHAR(32) DEFAULT NULL PRIMARY KEY,
+  	keyword_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  	keyword_name VARCHAR(255) NOT NULL UNIQUE
+);
+
+
 CREATE TABLE dim_subscriptions (
   subscription_key varchar(32) DEFAULT NULL PRIMARY KEY,
   user_id bigint NOT NULL,
@@ -56,8 +63,6 @@ CREATE TABLE dim_subscriptions (
   end_time datetime,
   KEY idx_user_subscriptions (user_id, keyword_id, start_time, end_time)
 );
-
-
 
 
 --

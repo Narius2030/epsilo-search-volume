@@ -14,7 +14,7 @@
     "machine learning"
   ],
   "timing": "hourly",
-  "start_time": "2025-02-01 00:00:00",
+  "start_time": "2024-12-11 00:00:00",
   "end_time": "2025-02-20 00:00:00"
 }
 
@@ -24,19 +24,10 @@
     "machine learning"
   ],
   "timing": "hourly",
-  "start_time": "2025-02-01 23:00:00",
+  "start_time": "2025-02-11 20:00:00",
   "end_time": "2025-02-20 00:00:00"
 }
 
-{
-  "user_id": 123,
-  "keywords": [
-    "machine learning"
-  ],
-  "timing": "hourly",
-  "start_time": "2025-02-11 00:00:00",
-  "end_time": "2025-02-20 00:00:00"
-}
 
 
 ## DAILAY
