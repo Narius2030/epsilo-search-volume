@@ -1,5 +1,5 @@
 # Vulnerability in Data Warehouse  Design
-Trong cấu trúc bảng dữ liệu nguồn, cột keyword_id là mã duy nhất và gắn liền với mọi hoạt động nghiệp vụ của đối tượng keyword đó. Do nó có độ ảnh hưởng lớn trong các hoạt động truy vấn keyword, nên một sự thay đổi (update) có thể khiến kết quả truy vấn từ Data Warehouse sẽ không đồng nhất
+Trong cấu trúc bảng dữ liệu nguồn, cột keyword_id là `mã duy nhất` và gắn liền với mọi hoạt động `nghiệp vụ` của đối tượng keyword đó. Do nó có độ ảnh hưởng lớn trong các hoạt động truy vấn keyword, nên một sự thay đổi (update) có thể khiến kết quả truy vấn từ Data Warehouse sẽ không đồng nhất
 
 Lý do:
 
@@ -7,7 +7,7 @@ Lý do:
 
 Câu truy vấn trong API khi kiểm tra tính lệ của request sử dụng `bảng keyword` để kiểm tra keyword_id có tồn tại hay không. Giả sử khi thay đổi keyword A từ `id=8 thành id=11`, thì kết quả sẽ `không có` dữ liệu keyword đó và trả về lỗi request không hợp lệ
 
-```md
+```sql
 -- Truy vấn dữ liệu trong API
 SELECT 
     subscription_key
@@ -40,7 +40,9 @@ Nhưng bảng fact sẽ là nơi API truy vấn để lấy dữ liệu, cho dù
 
 # Proposal Solution
 
-Tạo thêm một bảng dimension cho keyword, trong đó sẽ dùng cột `keyword_key` (là surrogate key) đóng vai trò là `khóa thay thế` cho keyword_id. Dùng nó để liên kết dữ liệu ở các công đoạn biến đổi sẽ đảm bảo được `thống nhất và toàn vẹn dữ liệu`. Bởi vì, cho dù keyword_id có thay đổi ra sao (hoặc các cột khác) thì cột được liên kết vẫn là keyword_key
+Tạo thêm một bảng dimension cho keyword, trong đó sẽ dùng cột `keyword_key` (là surrogate key) đóng vai trò là `khóa thay thế` cho keyword_id và nó sẽ không liên hệ gì tới nghiệp vụ của đối tượng, đơn thuần chỉ là `số thứ tự` trong bảng. 
+
+Dùng nó để liên kết dữ liệu ở các công đoạn biến đổi sẽ đảm bảo được `thống nhất và toàn vẹn dữ liệu`. Bởi vì, cho dù keyword_id có thay đổi ra sao (hoặc các cột khác) thì cột được liên kết vẫn là keyword_key
 
 Tương tự như các bảng dimension khác, định kỳ sẽ thu thập dữ liệu từ bảng keyword và `cập nhật` các cột (bao gồm keyword_id) nếu có thay đổi và `giữ nguyên` cột keyword_key. Các bảng fact sẽ liên kết dim_keywords thông qua cột keyword_key, đảm bảo tính toàn vẹn dữ liệu.
 
