@@ -1,4 +1,5 @@
 # Vulnerability in Data Warehouse  Design
+
 Trong cấu trúc bảng dữ liệu nguồn, cột keyword_id là `mã duy nhất` và gắn liền với mọi hoạt động `nghiệp vụ` của đối tượng keyword đó. Do nó có độ ảnh hưởng lớn trong các hoạt động truy vấn keyword, nên một sự thay đổi (update) có thể khiến kết quả truy vấn từ Data Warehouse sẽ không đồng nhất
 
 Lý do:
@@ -49,3 +50,9 @@ Tương tự như các bảng dimension khác, định kỳ sẽ thu thập dữ
 Thiết kế lại Data Warehouse như sau:
 
 ![alt text](image-1.png)
+
+# Những điểm chưa cover
+
+Các bảng dimension đang được load bằng kiểu `SCD Type 1`, tức là `upsert`, dẫn đến các dữ liệu trong quá khứ sẽ không được ghi lại. Ví dụ công ty thực hiện thay đổi cách đánh id, thì sẽ thay đổi keyword_id tại source, sau khi load mới sẽ cập nhật keyword_id trong dimension. Dẫn tới các bản ghi thuộc keyword_id cũ trong fact (hoặc các bảng có liên kết) không thể tham chiếu tới.
+
+Nên dùng `SCD Type 2` kèm thêm cột `row_is_current`, để đánh trạng thái của keyword_id cũ là false (nghĩa là ko còn hoạt động). Từ đó, các cột tham chiếu từ fact có thể tiếp tục liên kết với keyword_id cũ, và lưu trữ lại `dữ liệu lịch sử`.
